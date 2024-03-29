@@ -42,4 +42,10 @@ class MainController (val blogService: BlogService) {
     fun deletePost(@PathVariable("id") id:Int): Boolean{
         return blogService.deletePost(id)
     }
+    /* for aop test
+    *  @PostMapping()
+    fun createPost(@RequestBody() createPostReqDto: CreatePostReqDto) = NativeKotlinPerformence("test") {
+        return@NativeKotlinPerformence blogService.createPost(createPostReqDto.title, createPostReqDto.body)
+    }
+    * */
 }
