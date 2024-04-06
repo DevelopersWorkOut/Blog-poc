@@ -27,6 +27,8 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	runtimeOnly("com.h2database:h2")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	runtimeOnly("com.mysql:mysql-connector-j") //추가
+	implementation("org.springframework.boot:spring-boot-starter-jdbc") //추가
 }
 
 tasks.withType<KotlinCompile> {

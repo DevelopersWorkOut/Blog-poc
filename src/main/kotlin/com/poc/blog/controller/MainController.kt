@@ -1,7 +1,9 @@
 package com.poc.blog.controller
 
+import com.poc.blog.aop.Performance
+import com.poc.blog.entity.Post
 import com.poc.blog.service.BlogService
-import com.poc.blog.service.Post
+//import com.poc.blog.service.Post
 import org.springframework.web.bind.annotation.*
 
 data class CreatePostReqDto (
@@ -14,13 +16,14 @@ class MainController (val blogService: BlogService) {
 
 
     @GetMapping()
+    @Performance
     fun readPostList():List<Post> {
         val list:List<String> = listOf("HELLO","WORLD")
         return blogService.readPostList()
     }
 
     @GetMapping("/{id}")
-    fun readPost(@PathVariable("id") id:Int
+    fun readPost(@PathVariable("id") id:String//Int
                     , @RequestParam("page"
                     , required = false
                     , defaultValue = 0.toString()) page: Int)
@@ -34,12 +37,19 @@ class MainController (val blogService: BlogService) {
         return blogService.createPost(createPostReqDto.title, createPostReqDto.body)
     }
     @PostMapping("/{id}")
-    fun updatePost(@PathVariable("id") id:Int, @RequestBody() createPostReqDto: CreatePostReqDto): Boolean{
+    fun updatePost(@PathVariable("id") id:String //Int
+                   , @RequestBody() createPostReqDto: CreatePostReqDto): Boolean{
         return blogService.updatePost(id, createPostReqDto.title, createPostReqDto.body)
     }
 
     @PostMapping("/del/{id}")
-    fun deletePost(@PathVariable("id") id:Int): Boolean{
+    fun deletePost(@PathVariable("id") id:String): Boolean{
         return blogService.deletePost(id)
     }
+    /* for aop test
+    *  @PostMapping()
+    fun createPost(@RequestBody() createPostReqDto: CreatePostReqDto) = NativeKotlinPerformence("test") {
+        return@NativeKotlinPerformence blogService.createPost(createPostReqDto.title, createPostReqDto.body)
+    }
+    * */
 }
