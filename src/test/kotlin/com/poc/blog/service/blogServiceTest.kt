@@ -43,6 +43,7 @@ class blogServiceTest {
     }
 
     @Test
+    @DisplayName("없는 아이디 조회 시 익셉션 발생")
     fun readOnePostToFail(){
         val id:String = 1.toString() //Long = 1
         Mockito.`when`(postRepository.findById(id)).thenReturn(Optional.empty())
@@ -53,13 +54,14 @@ class blogServiceTest {
     }
 
     @Test
+    @DisplayName("존재하는 아이디 조회")
     fun  readOnePostToSuccess(){
         val id:String = 1.toString() //Long = 1
-        Mockito.`when`(postRepository.findById(id)).thenReturn(Optional.empty())
+        Mockito.`when`(postRepository.findById(id)).thenReturn(Optional.of(Post(title = "title0", body = "body0")))
         var rs = blogService.readPost(id)
 
-        Assertions.assertEquals("title",rs.title)
-        Assertions.assertEquals("body",rs.body)
+        Assertions.assertEquals("title0",rs.title)
+        Assertions.assertEquals("body0",rs.body)
     }
 
     @Test
@@ -74,18 +76,33 @@ class blogServiceTest {
 
     @Test
     fun createPost(){
+        Mockito.`when`(postRepository.save(Mockito.any())).thenReturn(Post(title = "tt", body = "bb"))
         var result = blogService.createPost("t1","b1")
         assertEquals(result, true)
 
     }
 
     @Test
+    @DisplayName("존재하지 않는 아이디 업데이트 시도 시 익셉션 발생")
     fun modifyFail(){
-        val id:Long = 1
+        val id:String = 1.toString()
+        Mockito.`when`(postRepository.findById(id)).thenReturn(Optional.empty())
+
+        val exception = assertThrows<BaseException> {
+            blogService.updatePost(id, "title0", "body0")
+        }
+
+        assertEquals(BaseResponseCode.POST_NOT_FOUND, exception.baseResponseCode)
     }
 
     @Test
+    @DisplayName("존재하는 아이디 업데이트")
     fun modifySuccess(){
-        val id:Long = 1
+        val id:String = 1.toString()
+        Mockito.`when`(postRepository.findById(id)).thenReturn(Optional.of(Post(title="title1", body="body1")))
+
+        val rst = blogService.updatePost(id, "title1", "body1")
+
+        assertEquals(rst, true)
     }
 }
